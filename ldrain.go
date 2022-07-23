@@ -1,11 +1,6 @@
-// Package ldrain allows to write data into Elasticsearch
-// in an efficient manner, using the BulkIndexer component.
-//
-// Its main use-case is to ingest data from eg. Vercel log drains
-// (https://vercel.com/docs/log-drains#format-and-transport/ndjson-log-drains).
-//
-// See: https://pkg.go.dev/github.com/elastic/go-elasticsearch/v8/esutil#BulkIndexer
-//
+// @packageName ldrain
+// @license (APACHE-2.0)
+// @version 0.0.1
 package ldrain
 
 import (
@@ -25,16 +20,16 @@ import (
 	"github.com/tidwall/sjson"
 )
 
-// Service writes data to Elasticsearch.
-//
+// Service 
+//	writes data to Elasticsearch
 type Service struct {
 	indexer     esutil.BulkIndexer
 	validSource []string
 	logger      zerolog.Logger
 }
 
-// Config configures the service.
-//
+// Config 
+//	configures ldrain service
 type Config struct {
 	ValidSource []string
 
@@ -48,8 +43,8 @@ type Config struct {
 	Logger zerolog.Logger
 }
 
-// New returns a new, functional Service.
-//
+// New 
+//	returns a new, functional Service.
 func New(cfg Config) (*Service, error) {
 	if cfg.ElasticsearchURL == "" {
 		return nil, errors.New("missing Elasticsearch URL")
@@ -95,8 +90,8 @@ func New(cfg Config) (*Service, error) {
 	}, nil
 }
 
-// Write adds b to BulkIndexer.
-//
+// Write 
+//	adds b to BulkIndexer
 func (s *Service) Write(b []byte) (int, error) {
 	var indexerErr error
 
@@ -137,28 +132,28 @@ func (s *Service) Write(b []byte) (int, error) {
 	return len(b), indexerErr
 }
 
-// Flush calls BulkIndexer.Close() to flush the buffers.
-//
+// Flush 
+//	calls BulkIndexer.Close() to flush the buffers.
 func (s *Service) Flush(ctx context.Context) error {
 	return s.indexer.Close(ctx)
 }
 
-// Stats returns BulkIndexer stats.
-//
+// Stats 
+//	returns BulkIndexer stats.
 func (s *Service) Stats() esutil.BulkIndexerStats {
 	return s.indexer.Stats()
 }
 
-// IsValidEntry returns true when the JSON entry is valid for storing.
-//
+// IsValidEntry 
+//	returns true when the JSON entry is valid for storing.
 func (s *Service) IsValidEntry(b []byte) bool {
 	result := gjson.GetBytes(b, "source").String()
 	index := sort.SearchStrings(s.validSource, result)
 	return index < len(s.validSource) && s.validSource[index] == result
 }
 
-// TransformEntry translates the Vercel JSON into proper structure.
-//
+// TransformEntry 
+//	translates the Vercel JSON into proper structure.
 func (s *Service) TransformEntry(input []byte) ([]byte, error) {
 	var (
 		keys []string
@@ -177,9 +172,11 @@ func (s *Service) TransformEntry(input []byte) ([]byte, error) {
 	output, _ = sjson.SetBytes(output, "event.dataset", "vercel")
 	output, _ = sjson.SetBytes(output, "data_stream.type", "logs")
 
-	// TODO: https://www.elastic.co/guide/en/ecs/8.2/ecs-service.html
+	//
+	// FIXME: https://www.elastic.co/guide/en/ecs/8.2/ecs-service.html
 	// service.name
 	// service.environment
+	//
 
 	switch source {
 	case "build":
