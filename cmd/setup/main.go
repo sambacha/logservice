@@ -20,7 +20,7 @@ var (
 )
 
 func init() {
-	flag.StringVar(&indexName, "index", "logservice-logs", "Elasticsearch index name")
+	flag.StringVar(&indexName, "index", "ldrain-logs", "Elasticsearch index name")
 	flag.Parse()
 }
 
@@ -48,23 +48,23 @@ func main() {
 	)
 
 	dataPolicy, _ := fs.Open("ilm-policy.json")
-	res, err = esclient.ILM.PutLifecycle("logservice", esclient.ILM.PutLifecycle.WithBody(dataPolicy))
+	res, err = esclient.ILM.PutLifecycle("ldrain", esclient.ILM.PutLifecycle.WithBody(dataPolicy))
 	handleError("creating lifecycle", err, res)
 
 	dataSettings, _ := fs.Open("settings.json")
-	res, err = esclient.Cluster.PutComponentTemplate("logservice-settings", dataSettings)
+	res, err = esclient.Cluster.PutComponentTemplate("ldrain-settings", dataSettings)
 	handleError("creating settings", err, res)
 
 	dataMappings, _ := fs.Open("mappings.json")
-	res, err = esclient.Cluster.PutComponentTemplate("logservice-mappings", dataMappings)
+	res, err = esclient.Cluster.PutComponentTemplate("ldrain-mappings", dataMappings)
 	handleError("creating mappings", err, res)
 
-	res, err = esclient.Indices.PutIndexTemplate("logservice",
+	res, err = esclient.Indices.PutIndexTemplate("ldrain",
 		strings.NewReader(
 			`{
 			"index_patterns": ["`+indexName+`*"],
 			"data_stream": { },
-			"composed_of": [ "logservice-settings", "logservice-mappings" ]
+			"composed_of": [ "ldrain-settings", "ldrain-mappings" ]
 		}`),
 	)
 	handleError("creating index template", err, res)

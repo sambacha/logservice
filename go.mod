@@ -1,4 +1,4 @@
-module github.com/cesko-digital/vercel-logging
+module github.com/sambacha/ldrain
 
 go 1.18
 

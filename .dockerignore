@@ -1,0 +1,9 @@
+tarball/
+.git/
+.github/
+Dockerfile
+scripts/
+.DS_Store
+node_modules
+vendor/
+docker-compose.yml

@@ -1,5 +1,7 @@
 SHELL := /bin/bash
 
+build:
+	DOCKER_BUILDKIT=1 docker build -t manifoldfinance/ldrain:latest .
 ##@ Development
 lint:  ## Run lint on the package
 	@printf "\033[2m→ Running lint...\033[0m\n"
@@ -38,4 +40,4 @@ help:  ## Display help
 #------------- <https://suva.sh/posts/well-documented-makefiles> --------------
 
 .DEFAULT_GOAL := help
-.PHONY: help cluster lint server test test-unit test-integ
+.PHONY: help cluster lint server test test-unit test-integ build

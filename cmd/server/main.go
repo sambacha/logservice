@@ -11,7 +11,7 @@ import (
 	"syscall"
 	"time"
 
-	logservice "github.com/cesko-digital/vercel-logging"
+	ldrain "github.com/sambacha/ldrain"
 )
 
 var (
@@ -24,7 +24,7 @@ var (
 )
 
 func init() {
-	flag.StringVar(&indexName, "index", "logservice-logs", "Elasticsearch index name")
+	flag.StringVar(&indexName, "index", "ldrain-logs", "Elasticsearch index name")
 	flag.IntVar(&flushBytes, "flushBytes", 1e+6, "Flush threshold in bytes")
 	flag.DurationVar(&flushInterval, "flushInterval", 5*time.Second, "Flush threshold in duration")
 	flag.Parse()
@@ -43,7 +43,7 @@ func main() {
 
 	log.Printf("Server starting at %s:%s...", listenAddr, listenPort)
 
-	svc, err := logservice.New(logservice.Config{
+	svc, err := ldrain.New(ldrain.Config{
 		IndexName:     indexName,
 		FlushInterval: flushInterval,
 		FlushBytes:    flushBytes,
@@ -88,7 +88,7 @@ func main() {
 
 // shutdownServer calls Writer.Flush() and prints the indexer's statistics.
 //
-func shutdownServer(svc *logservice.Service, flushCompleted chan struct{}) {
+func shutdownServer(svc *ldrain.Service, flushCompleted chan struct{}) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	svc.Flush(ctx)

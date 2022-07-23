@@ -1,4 +1,4 @@
-// Package logservice allows to write data into Elasticsearch
+// Package ldrain allows to write data into Elasticsearch
 // in an efficient manner, using the BulkIndexer component.
 //
 // Its main use-case is to ingest data from eg. Vercel log drains
@@ -6,7 +6,7 @@
 //
 // See: https://pkg.go.dev/github.com/elastic/go-elasticsearch/v8/esutil#BulkIndexer
 //
-package logservice
+package ldrain
 
 import (
 	"bytes"
