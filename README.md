@@ -1,10 +1,30 @@
-# [`ldrain`](#)
+# [`logservice`](#)
 
 ## Abstract
 
-`ldrain` enables logs to write data into Elasticsearch in an efficient manner, using the [BulkIndexer component](https://pkg.go.dev/github.com/elastic/go-elasticsearch/v8/esutil#BulkIndexer).
+logservice (`ldrain`) enables logs to write data into Elasticsearch in an efficient manner, using the [Elasticsearch `BulkIndexer` component](https://pkg.go.dev/github.com/elastic/go-elasticsearch/v8/esutil#BulkIndexer).
 
-Its main use-case is to ingest data from platforms such as [Vercel via their log drains](https://vercel.com/docs/log-drains#format-and-transport/ndjson-log-drains).
+Its main use-case is to ingest data from platforms such as [Vercel via their log drains](https://vercel.com/docs/log-drains#format-and-transport/ndjson-log-drains). 
+
+## Setup and configuration
+
+*ldrain configuration*
+
+### Elasticsearch configuration
+
+```env
+ELASTICSEARCH_API_KEY=
+ELASTICSEARCH_URL=
+```
+### Data related configuration
+
+- Data Policy: `ilm-policy.json`
+
+- Data Settings: `settings.json`
+
+- Data Mappings: `mappings.json`
+  
+
 
 ### Build
 
