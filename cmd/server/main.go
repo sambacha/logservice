@@ -11,7 +11,7 @@ import (
 	"syscall"
 	"time"
 
-	ldrain "github.com/sambacha/ldrain"
+	ldrain "github.com/sambacha/logservice"
 )
 
 var (
@@ -41,7 +41,7 @@ func main() {
 		listenPort = envPort
 	}
 
-	log.Printf("Server starting at %s:%s...", listenAddr, listenPort)
+	log.Printf("⚡︎ Server starting at %s:%s...", listenAddr, listenPort)
 
 	svc, err := ldrain.New(ldrain.Config{
 		IndexName:     indexName,
@@ -52,7 +52,7 @@ func main() {
 		ElasticsearchAPIKey: os.Getenv("ELASTICSEARCH_API_KEY"),
 	})
 	if err != nil {
-		log.Fatalf("Error creating server: %s", err)
+		log.Fatalf("✘ Error creating server: %s", err)
 	}
 
 	srv := &http.Server{
@@ -69,25 +69,24 @@ func main() {
 		signal.Notify(sig, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 		<-sig
 
-		log.Printf("Server shutting down...")
+		log.Printf("⚡︎ Server shutting down...")
 
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
 
 		if err := srv.Shutdown(ctx); err != nil {
-			log.Fatalf("Error shutting down server: %s", err)
+			log.Fatalf("✘ Error shutting down server: %s", err)
 		}
 	}()
 
 	if err = srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-		log.Fatalf("Error starting server: %s", err)
+		log.Fatalf("✘ Error starting server: %s", err)
 	}
 
 	<-flushCompleted
 }
 
 // shutdownServer calls Writer.Flush() and prints the indexer's statistics.
-//
 func shutdownServer(svc *ldrain.Service, flushCompleted chan struct{}) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -95,7 +94,7 @@ func shutdownServer(svc *ldrain.Service, flushCompleted chan struct{}) {
 
 	indexerStats := svc.Stats()
 	log.Printf(
-		"Indexed [%d] documents from [%d] added with [%d] errors",
+		"✔︎ Indexed [%d] documents from [%d] added with [%d] errors",
 		indexerStats.NumFlushed,
 		indexerStats.NumAdded,
 		indexerStats.NumFailed)
