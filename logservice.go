@@ -1,7 +1,11 @@
-// @packageName ldrain
+//
+// @packageName logservice
+// f.k.a. ldrain
 // @license (APACHE-2.0)
-// @version 0.0.1
-package ldrain
+// @version 0.0.2
+//
+
+package logservice
 
 import (
 	"bytes"
@@ -20,7 +24,7 @@ import (
 	"github.com/tidwall/sjson"
 )
 
-// Service 
+// @Service
 //	writes data to Elasticsearch
 type Service struct {
 	indexer     esutil.BulkIndexer
@@ -28,7 +32,7 @@ type Service struct {
 	logger      zerolog.Logger
 }
 
-// Config 
+// @Config 
 //	configures ldrain service
 type Config struct {
 	ValidSource []string
@@ -43,7 +47,7 @@ type Config struct {
 	Logger zerolog.Logger
 }
 
-// New 
+// @NewService
 //	returns a new, functional Service.
 func New(cfg Config) (*Service, error) {
 	if cfg.ElasticsearchURL == "" {
@@ -66,7 +70,7 @@ func New(cfg Config) (*Service, error) {
 		MaxRetries:    10,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("error creating Elasticsearch client: %s", err)
+		return nil, fmt.Errorf("✘ Error creating Elasticsearch client: %s", err)
 	}
 
 	indexer, err := esutil.NewBulkIndexer(esutil.BulkIndexerConfig{
@@ -80,7 +84,7 @@ func New(cfg Config) (*Service, error) {
 		},
 	})
 	if err != nil {
-		return nil, fmt.Errorf("error creating the indexer: %s", err)
+		return nil, fmt.Errorf("✘ Error creating the indexer: %s", err)
 	}
 
 	return &Service{
@@ -90,7 +94,7 @@ func New(cfg Config) (*Service, error) {
 	}, nil
 }
 
-// Write 
+// @Write 
 //	adds b to BulkIndexer
 func (s *Service) Write(b []byte) (int, error) {
 	var indexerErr error
@@ -178,6 +182,8 @@ func (s *Service) TransformEntry(input []byte) ([]byte, error) {
 	// service.environment
 	//
 
+	// NOTE:
+	// 	Vercel related data types
 	switch source {
 	case "build":
 		keys = []string{"buildId", "deploymentId", "entrypoint", "message", "projectId"}
