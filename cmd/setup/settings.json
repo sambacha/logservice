@@ -1,7 +1,7 @@
 {
     "template": {
         "settings": {
-            "index.lifecycle.name": "ldrain"
+            "index.lifecycle.name": "logservice"
         }
     }
 }
