@@ -20,7 +20,7 @@ var (
 )
 
 func init() {
-	flag.StringVar(&indexName, "index", "ldrain-logs", "Elasticsearch index name")
+	flag.StringVar(&indexName, "index", "logservice-logs", "Elasticsearch index name")
 	flag.Parse()
 }
 
@@ -34,7 +34,7 @@ func main() {
 		Logger: &elastictransport.ColorLogger{Output: os.Stdout, EnableResponseBody: true},
 	})
 	if e != nil {
-		log.Fatalf("Error creating Elasticsearch client: %s", e)
+		log.Fatalf("✘ Error creating Elasticsearch client: %s", e)
 	}
 
 	// log.Println(esclient.Info())
@@ -56,7 +56,7 @@ func main() {
 	handleError("creating settings", err, res)
 
 	dataMappings, _ := fs.Open("mappings.json")
-	res, err = esclient.Cluster.PutComponentTemplate("ldrain-mappings", dataMappings)
+	res, err = esclient.Cluster.PutComponentTemplate("logservice-mappings", dataMappings)
 	handleError("creating mappings", err, res)
 
 	res, err = esclient.Indices.PutIndexTemplate("ldrain",
@@ -64,7 +64,7 @@ func main() {
 			`{
 			"index_patterns": ["`+indexName+`*"],
 			"data_stream": { },
-			"composed_of": [ "ldrain-settings", "ldrain-mappings" ]
+			"composed_of": [ "logservice-settings", "logservice-mappings" ]
 		}`),
 	)
 	handleError("creating index template", err, res)
@@ -81,9 +81,9 @@ func main() {
 
 func handleError(msg string, err error, res *esapi.Response) {
 	if err != nil {
-		log.Fatalf("Error: %s: %s", msg, err)
+		log.Fatalf("✘ Error: %s: %s", msg, err)
 	}
 	if res.IsError() {
-		log.Fatalf("Error: %s: %s", msg, res)
+		log.Fatalf("✘ Error: %s: %s", msg, res)
 	}
 }
