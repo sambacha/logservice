@@ -1,4 +1,4 @@
-module github.com/sambacha/ldrain
+module github.com/sambacha/logservice
 
 go 1.18
 
