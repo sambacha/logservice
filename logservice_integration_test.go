@@ -17,7 +17,7 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 
-	ldrain "github.com/sambacha/ldrain"
+	logservice "github.com/sambacha/logservice"
 )
 
 //go:embed *.ndjson
@@ -25,7 +25,7 @@ var fs embed.FS
 
 func TestService(t *testing.T) {
 	svc, err := ldrain.New(ldrain.Config{
-		IndexName:           "ldrain-logs",
+		IndexName:           "logservice-logs",
 		ElasticsearchURL:    os.Getenv("ELASTICSEARCH_URL"),
 		ElasticsearchAPIKey: os.Getenv("ELASTICSEARCH_API_KEY"),
 
